@@ -1,0 +1,214 @@
+{% extends 'stock/_header.html' %}
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-header card-header-warning">
+                            <h4 class="card-title">Register New Account</h4>
+                            <p class="card-category">Welcome to the Inventory party!</p>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <div class="col-md-12">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-floating">Username</label>
+                                                <input class="form-control" type="text" name="username" maxlength="150"
+                                                       autocapitalize="none" autofocus="" required="" id="id_username">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-floating">Password</label>
+                                                <input class="form-control" type="password" name="password1"
+                                                       autocomplete="new-password"
+                                                       required="" id="id_password1"
+                                                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-floating">Confirm Password</label>
+                                                <input class="form-control" type="password" name="password2"
+                                                       autocomplete="new-password"
+                                                       required="" id="id_password2"
+                                                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}">
+                                            </div>
+
+                                            <button class="btn btn-primary pull-right" type="submit">Create User
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                                <style>
+                                    /* The message box is shown when the user clicks on the password field */
+                                    #message {
+                                        display: none;
+                                        background: #f1f1f1;
+                                        color: #000;
+                                        position: relative;
+                                        padding: 20px;
+                                        margin-top: 10px;
+                                    }
+
+                                    #message p {
+                                        padding: 10px 35px;
+                                        font-size: 18px;
+                                    }
+                                </style>
+                                <div id="message">
+                                    <h3>Password must contain the following:</h3>
+                                    <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+                                    <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+                                    <p id="number" class="invalid">A <b>number</b></p>
+                                    <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    var myInput = document.getElementById("id_password1");
+                    var letter = document.getElementById("letter");
+                    var capital = document.getElementById("capital");
+                    var number = document.getElementById("number");
+                    var length = document.getElementById("length");
+
+                    // When the user clicks on the password field, show the message box
+                    myInput.onfocus = function () {
+                        document.getElementById("message").style.display = "block";
+                    }
+
+                    // When the user clicks outside of the password field, hide the message box
+                    myInput.onblur = function () {
+                        document.getElementById("message").style.display = "none";
+                    }
+
+                    // When the user starts to type something inside the password field
+                    myInput.onkeyup = function () {
+                        // Validate lowercase letters
+                        var lowerCaseLetters = /[a-z]/g;
+                        if (myInput.value.match(lowerCaseLetters)) {
+                            letter.classList.remove("invalid");
+                            letter.classList.add("valid");
+                        } else {
+                            letter.classList.remove("valid");
+                            letter.classList.add("invalid");
+                        }
+
+                        // Validate capital letters
+                        var upperCaseLetters = /[A-Z]/g;
+                        if (myInput.value.match(upperCaseLetters)) {
+                            capital.classList.remove("invalid");
+                            capital.classList.add("valid");
+                        } else {
+                            capital.classList.remove("valid");
+                            capital.classList.add("invalid");
+                        }
+
+                        // Validate numbers
+                        var numbers = /[0-9]/g;
+                        if (myInput.value.match(numbers)) {
+                            number.classList.remove("invalid");
+                            number.classList.add("valid");
+                        } else {
+                            number.classList.remove("valid");
+                            number.classList.add("invalid");
+                        }
+
+                        // Validate length
+                        if (myInput.value.length >= 8) {
+                            length.classList.remove("invalid");
+                            length.classList.add("valid");
+                        } else {
+                            length.classList.remove("valid");
+                            length.classList.add("invalid");
+                        }
+                    }
+                </script>
+                <div class="col-lg-6 col-md-6">
+                    <div class="card">
+                        <div class="card-header card-header-warning">
+                            <h4 class="card-title">Remove User Account</h4>
+                            <p class="card-category">...bye bye</p>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <div class="col-md-12">
+                                {% for users in companyAccounts %}
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="form-group bmd-form-group">
+                                                    <label class="bmd-label-floating">Username</label>
+                                                    <input name="name" class="form-control" value="{{ users.user }}"
+                                                           type="text" name="username" maxlength="150"
+                                                           autocapitalize="none" autofocus="" required="" id="name"
+                                                           readonly>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-primary pull-right" id="delete" name="delete"
+                                                    type="submit">Delete Account
+                                            </button>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </form>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{#                <div class="col-lg-6 col-md-6">#}
+{#                    <div class="card">#}
+{#                        <div class="card-header card-header-success">#}
+{#                            <h4 class="card-title">Link Shopify Account</h4>#}
+{#                            <p class="card-category">let the fun begin!</p>#}
+{#                        </div>#}
+{#                        <div class="card-body table-responsive">#}
+{#                            <div class="col-md-12">#}
+{#                                {% if shopify %}#}
+{#                                    <form method="post">#}
+{#                                    {% csrf_token %}#}
+{#                                    <div class="form-group bmd-form-group">#}
+{#                                        <input class="form-control" type="text" name="API_Key" hidden>#}
+{#                                    </div>#}
+{#                                    <div class="form-group bmd-form-group">#}
+{#                                        <input class="form-control" type="text" name="password" hidden>#}
+{#                                    </div>#}
+{#                                    <div class="form-group bmd-form-group">#}
+{#                                        <label class="bmd-label-floating">Store Name</label>#}
+{#                                        <input class="form-control" type="text" value="{% for i in shopify %}{{ i.store_name }}{% endfor %}" name="shop_name" readonly>#}
+{#                                    </div>#}
+{#                                    <input class="btn btn-primary pull-right" type="submit" name="unregister_shopify" value="Un-Link">#}
+{#                                </form>#}
+{#                                {% else %}#}
+{#                                <form method="post">#}
+{#                                    {% csrf_token %}#}
+{#                                    <div class="form-group bmd-form-group">#}
+{#                                        <label class="bmd-label-floating">API Key</label>#}
+{#                                        <input class="form-control" type="text" name="API_Key">#}
+{#                                    </div>#}
+{#                                    <div class="form-group bmd-form-group">#}
+{#                                        <label class="bmd-label-floating">Password</label>#}
+{#                                        <input class="form-control" type="text" name="password">#}
+{#                                    </div>#}
+{#                                    <div class="form-group bmd-form-group">#}
+{#                                        <label class="bmd-label-floating">Store Name</label>#}
+{#                                        <input class="form-control" type="text" name="shop_name">#}
+{#                                    </div>#}
+{#                                    <input class="btn btn-primary pull-right" type="submit" name="register_shopify" value="Link">#}
+{#                                </form>#}
+{#                                {% endif %}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+    </div>
+{% endblock %}

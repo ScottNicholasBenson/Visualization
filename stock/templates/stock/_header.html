@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>
+        Stock-IO
+    </title>
+    <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport'/>
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <link rel="shortcut icon" type="image/png" href="{% static 'assets/img/favicon.png' %}"/>
+    <script src="{% static 'assets/js/core/jquery.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+    <!-- CSS Files -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
+
+    <link href="{% static 'assets/css/material-dashboard.css' %}" rel="stylesheet"/>
+
+
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    {#    <link href="{% static 'assets/demo/demo.css" rel="stylesheet' %}"/>#}
+</head>
+
+{% if user.is_authenticated %}
+    {% include "stock/include/navbar.html" %}
+    {% include "stock/include/messages.html" %}
+{% endif %}
+<style>
+    .select2 {
+        width: 100% !important;
+    }
+</style>
+{% block content %}
+    <!-- populates into here from templates -->
+{% endblock %}
+{% include "stock/_footer.html" %}
+
+</body>
+
+</html>
+

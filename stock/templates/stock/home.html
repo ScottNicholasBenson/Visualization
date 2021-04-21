@@ -1,0 +1,67 @@
+{% extends 'stock/_header.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+    <div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+            <div class="row row-cards">
+            {# Have different stock category amounts here? #}
+              <div class="col-6 col-sm-4 col-lg-2">
+                <div class="card">
+                  <div class="card-body p-3 text-center">
+                    <div class="h1 m-0">{{ items_in_stock|intcomma }}</div>
+                    <div class="text-muted mb-4">Items in Stock</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6 col-sm-4 col-lg-2">
+                <div class="card">
+                  <div class="card-body p-3 text-center">
+                    <div class="h1 m-0">{{ items_on_delivery|intcomma }}</div>
+                    <div class="text-muted mb-4">Items On Delivery</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6 col-sm-4 col-lg-2">
+                <div class="card">
+                  <div class="card-body p-3 text-center">
+                    <div class="h1 m-0">{{ total_value_of_stock| stringformat:".2f" }}</div>
+                    <div class="text-muted mb-4">Total Value of Stock</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6 col-sm-4 col-lg-2">
+                <div class="card">
+                  <div class="card-body p-3 text-center">
+
+                    <div class="h1 m-0">27.3K</div>
+                    <div class="text-muted mb-4">TBC</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6 col-sm-4 col-lg-2">
+                <div class="card">
+                  <div class="card-body p-3 text-center">
+
+                    <div class="h1 m-0">$95</div>
+                    <div class="text-muted mb-4">TBC</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6 col-sm-4 col-lg-2">
+                <div class="card">
+                  <div class="card-body p-3 text-center">
+
+                    <div class="h1 m-0">621</div>
+                    <div class="text-muted mb-4">TBC</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

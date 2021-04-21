@@ -1,0 +1,175 @@
+{% load static %}
+<body class="">
+<div class="wrapper ">
+    <div class="sidebar" data-color="azure" data-background-color="white">
+        <!--
+          Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+          Tip 2: you can also add an image using data-image tag
+      -->
+        <div class="logo"><a class="simple-text logo-normal">
+            <img src="{% static 'assets/img/logo.png' %}"><br>
+            <h5>Welcome, {{ currentUser }}</h5>
+        </a></div>
+
+
+
+        <div class="sidebar-wrapper ps-container ps-theme-default">
+            <ul class="nav">
+                <li class="nav-item {% if active == 'stock_in' %}active{% endif %}">
+                    <a class="nav-link" href="/stock_in">
+                        <i class="material-icons">content_paste</i>
+                        <p>Stock In/Out</p>
+                    </a>
+                </li>
+            <li class="nav-item {% if active == 'itemsOnDelivery' %}active{% endif %}">
+                        <a class="nav-link" href="/deliveryBookIn">
+                            <i class="material-icons">get_app</i>
+                            <p>Book In Delivery{% if itemsOnDeliveryCount %}({{ itemsOnDeliveryCount }}){% else %}
+                                (0){% endif %}</p>
+                        </a>
+                    </li>
+            <li class="nav-item {% if active == 'order_review' %}active{% endif %}">
+                        <a class="nav-link" href="/order_review">
+                            <i class="material-icons">library_books</i>
+                            <p>Order Review{% if orderReviewCount %}({{ orderReviewCount }}){% else %}(0){% endif %}</p>
+                        </a>
+                    </li>
+                {% if request.user.is_staff %}
+                    <li class="nav-item {% if active == 'review_requested_stock' %}active{% endif %}">
+                        <a class="nav-link" href="/review_requested_stock">
+                            <i class="material-icons">assignment_late</i>
+                            <p>Requested Stock Review {% if review_order_count %}({{ review_order_count }}){% else %}
+                                (0){% endif %}</p>
+                        </a>
+                    </li>
+
+
+                    <li class="nav-item {% if active == 'inventoryManagement' %}active{% endif %}">
+                        <a class="nav-link" href="/inventoryManagement">
+                            <i class="material-icons">inventory</i>
+                            <p>Management</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {% if active == 'search' %}active{% endif %}">
+                        <a class="nav-link" href="/search">
+                            <i class="material-icons">bubble_chart</i>
+                            <p>search</p>
+                        </a>
+                    </li>
+                    <li class="nav-item {% if active == 'consignmentView' %}active{% endif %}">
+                        <a class="nav-link" href="/InventoryProfiles">
+                            <i class="material-icons">list</i>
+                            <p>Inventory Profiles</p>
+                        </a>
+                    </li>
+                    {% if shopify_active %}
+                        <li class="nav-item {% if active == 'shopify' %}active{% endif %}">
+                        <a class="nav-link" href="/shopify">
+                            <p><img style="height: 25px" src="https://cdn.shopify.com/shopifycloud/web/assets/v1/2217fb04df073033ccce8d125b0ea020.svg" alt="">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Manage Shopfiy</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {#                    <li class="nav-item {% if active == 'BOM' %}active{% endif %}">#}
+                    {#                        <a class="nav-link" href="/billOfMaterials">#}
+                    {#                            <i class="material-icons">assignment</i>#}
+                    {#                            <p>Manage BOMs</p>#}
+                    {#                        </a>#}
+                    {#                    </li>#}
+                    {#                    <li class="nav-item {% if active == 'viewBOM' %}active{% endif %}">#}
+                    {#                        <a class="nav-link" href="/viewBillOfMaterials">#}
+                    {#                            <i class="material-icons">assignment</i>#}
+                    {#                            <p>Pending BOMs {% if pendingBOMCount %}({{ pendingBOMCount }}){% else %}(0){% endif %}</p>#}
+                    {#                        </a>#}
+                    {#                    </li>#}
+                    {#                    <li class="nav-item {% if active == 'approvedBOM' %}active{% endif %}">#}
+                    {#                        <a class="nav-link" href="/approvedBillOfMaterials">#}
+                    {#                            <i class="material-icons">assignment</i>#}
+                    {#                            <p>Approved BOMs {% if approvedBOMCount %}({{ approvedBOMCount }}){% else %}#}
+                    {#                                (0){% endif %}</p>#}
+                    {#                        </a>#}
+                    {#                    </li>#}
+                    <li class="nav-item {% if active == 'register' %}active{% endif %}">
+                        <a class="nav-link" href="/register">
+                            <i class="material-icons">face</i>
+                            <p>Manage Users</p>
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">
+                        <i class="material-icons">logout</i>
+                        <p>Logout</p>
+                    </a>
+                </li>
+
+
+            </ul>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+        <div class="container-fluid">
+            <div class="navbar-wrapper">
+            </div>
+
+            <div class="collapse navbar-collapse justify-content-end">
+                <form class="navbar-form">
+                </form>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="javascript:;" id="navbarDropdownProfile" data-toggle="dropdown"
+                           aria-haspopup="true" aria-expanded="false">
+
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
+
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-panel ps-container ps-theme-default" data-ps-id="0121e48e-24ca-81e3-e270-b720c17f830a">
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+            <div class="container-fluid">
+                <div class="navbar-wrapper">
+                    <a class="navbar-brand" href="javascript:;"><h2>{{ PageName }}</h2></a>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="navbar-toggler-icon icon-bar"></span>
+                    <span class="navbar-toggler-icon icon-bar"></span>
+                    <span class="navbar-toggler-icon icon-bar"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end">
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="material-icons">notifications</i>
+                                <span class="notification">{{ notifyAmount }}</span>
+
+                            </a>
+                            {#                            Notifications Here#}
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                {% for notifications in notification %}
+                                    <div class="tim-typo">
+                                        <a class="dropdown-item" href="/notificationHistory" title=""><h5>
+                                            <small>{{ notifications.created_at }}</small><br>{{ notifications.notification }}
+                                        </h5></a>
+                                    </div>
+                                {% endfor %}
+                                <div class="tim-typo"><a class="dropdown-item" title="" href="/notificationHistory"><p
+                                        class="text-info">See all notifications...</p></a></div>
+                        </li>
+                        <li class="nav-item dropdown">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>

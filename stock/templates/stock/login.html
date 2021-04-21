@@ -1,0 +1,45 @@
+{% extends 'stock/_header.html' %}
+{% block content %}
+    <div class="page">
+      <div class="page-single">
+        <div class="container">
+          <div class="row">
+            <div class="col col-login mx-auto">
+              <div class="text-center mb-6">
+                <img src="./assets/brand/tabler.svg" class="h-6" alt="">
+              </div>
+              <form class="card" action="" method="post">
+                  {% if message %}
+                      <script type=text/javascript>toastr.info('{{ message }}')</script>
+                  {% endif %}
+                <div class="card-body p-6">
+                    <div class="card-title">Login to your account</div>
+                    <form method="post">
+                        <div class="form-group">
+                            {% csrf_token %}
+                            <label class="form-label" for="id_username">Username:</label>
+                            <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" required="" id="id_username" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="id_password">Password:<a href="" class="float-right small">I
+                                forgot password</a></label>
+                            <input type="password" name="password" autocomplete="current-password" required=""
+                                   id="id_password" class="form-control">
+                        </div>
+                        <div class="form-footer">
+                            <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+                        </div>
+                    </form>
+
+                </div>
+              </form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,183 @@
+{% extends 'stock/_header.html' %}
+{% load transaction_extras %}
+{% load humanize %}
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-tabs card-header-primary">
+                            <span class="nav-tabs-title">Inventory Profiles</span>
+                        </div>
+                        <form method="post" id="consignment">
+                            {% csrf_token %}
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="form-group bmd-form-group">
+                                        <input class="form-control" list="profiles" name="profile" id="profile"
+                                               value="{{ consignmentProfile }}" autocomplete="off">
+                                        <datalist id="profile">
+                                            {% for stock in consignObj %}
+                                                <option value="{{ stock.name }}">
+                                            {% endfor %}
+                                        </datalist>
+                                    </div>
+                                </div>
+                                <div class="form-group bmd-form-group" style="width: 100%">
+                                    <input class="btn btn-danger pull-right" type="submit"
+                                           value="DELETE"
+                                           id="delete" name="delete"
+                                           onclick="return confirm('are you sure you want to DELETE this profile?')">
+                                    <input class="btn btn-info pull-right" type="submit"
+                                           value="email"
+                                           id="emailConsignment" name="Send Consignment Email">
+                                    <input class="btn btn-warning pull-right" type="submit"
+                                           value="Load"
+                                           id="viewConsignment" name="viewConsignment">
+                                    <input class="btn btn-success pull-right" type="submit"
+                                           value="Create"
+                                           id="Create" name="Create">
+                                </div>
+                            </div>
+                    </div>
+                    </form>
+                </div>
+
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header card-header-tabs card-header-primary">
+                            <span class="nav-tabs-title"><h3>{% if consignmentProfile %} Profile Loaded:
+                                {{ consignmentProfile }}{% endif %}</h3></span>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input class="form-control" name="name" id="name"
+                                       type="hidden"
+                                       value="{{ consignmentProfile }}" readonly>
+                                <input class="btn btn-info pull-right" type="submit"
+                                       value="Edit"
+                                       id="editConsignment" name="editConsignment">
+                            </form>
+
+                        </div>
+                        <div class="card-body">
+                            <table class="table" id="example">
+                                <thead class="text-primary">
+                                <tr>
+                                    <th class="th-sm">Item Name</th>
+                                    <th class="th-sm">BarCode</th>
+                                    <th class="th-sm">Price</th>
+                                    <th class="th-sm">Amount In-Stock</th>
+                                    <th class="th-sm">Trigger Amount</th>
+                                    <th class="th-sm">Last Ordered</th>
+                                    <th class="th-sm">Order Code</th>
+                                    <th class="th-sm">Schedule Order</th>
+                                    <th class="th-sm">Last Ordered</th>
+                                    <th class="th-sm">On Order</th>
+                                    <th class="th-sm">Supplier</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in consignmentStockObj %}
+                                    <tr>
+                                        <td>{{ i.name }}</td>
+                                        <td>{{ i.barCode }}</td>
+                                        <td>£{{ i.price | monify }}</td>
+                                        <td>{{ i.stockAmount }}</td>
+                                        <td>{{ i.orderTrigger }}</td>
+                                        <td>{{ i.lastOrdered }}</td>
+                                        <td>{{ i.orderCode }}</td>
+                                        <td>{{ i.orderTrigger }}</td>
+                                        <td>{{ i.lastOrdered }}</td>
+                                        <td>{{ i.onOrder }}</td>
+                                        <td>{{ i.supplier }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript"
+                src="https://cdn.datatables.net/buttons/1.4.1/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.flash.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+        <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.html5.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.print.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css"></script>
+        <script type="text/javascript"
+                src="https://cdn.datatables.net/rowreorder/1.2.7/js/dataTables.rowReorder.min.js"></script>
+        <script type="text/javascript"
+                src="https://cdn.datatables.net/responsive/2.2.7/js/dataTables.responsive.min.js"></script>
+
+        <script>
+            var table = $('#example').removeAttr('width').DataTable({
+                dom: 'Bfrtip',
+                rowReorder: {
+                    selector: 'td:nth-child(2)'
+                },
+                responsive: true,
+                buttons: [
+                    {
+                        extend: 'copy',
+                        text: '<a class="waves-effect waves-light btn"><i class="material-icons left">content_copy</i>Copy Current Page</a>',
+                        exportOptions: {
+                            columns: ':visible'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<a class="waves-effect waves-light btn"><i class="material-icons left">list</i>Export Current Page as CSV</a>',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        filename: function () {
+                            var today = new Date();
+                            var dd = String(today.getDate()).padStart(2, '0');
+                            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                            var yyyy = today.getFullYear();
+
+                            today = dd + '.' + mm + '.' + yyyy;
+                            return 'StockReport: ' + today;
+                        },
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<a class="waves-effect waves-light btn"><i class="material-icons left">picture_as_pdf</i>Export Current Page as PDF</a>',
+                        exportOptions: {
+                            columns: ':visible'
+                        },
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        filename: function () {
+                            var today = new Date();
+                            var dd = String(today.getDate()).padStart(2, '0');
+                            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                            var yyyy = today.getFullYear();
+
+                            today = dd + '.' + mm + '.' + yyyy;
+                            return 'StockReport: ' + today;
+                        },
+                    },
+
+
+                ],
+                "columnDefs": [
+                    {
+                        "visible": false,
+                        className: 'hidden',
+                    }
+                ],
+                "bPaginate": false,
+            });
+        </script>
+{% endblock %}

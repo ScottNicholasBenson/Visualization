@@ -1,0 +1,312 @@
+{% extends "stock/_header.html" %}
+{% load transaction_extras %}
+{% load static %}
+{% block content %}
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-tabs card-header-primary">
+                            <span class="nav-tabs-title">Create Bill Of Materials</span>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-floating">B.O.M Name</label>
+                                                <input class="form-control" list="BOM" id="BOMname" name="BOMname"
+                                                       autocomplete="off" required>
+                                            </div>
+                                            <datalist id="BOM">
+                                                {% for stock in BOMObjList %}
+                                                    <option value="{{ stock.BOMname }}">
+                                                {% endfor %}
+                                            </datalist>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-floating">Project Name</label>
+                                                <input class="form-control" id="BOMproject" name="BOMproject"
+                                                       autocomplete="off" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group bmd-form-group">
+                                        <input class="btn btn-danger pull-right" type="submit"
+                                               value="Create"
+                                               id="createBOM" name="createBOM">
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-tabs card-header-danger">
+                            <span class="nav-tabs-title">PENDING Bill Of Materials</span>
+                        </div>
+                        <div class="card-body">
+                            {% for BOM in BOMObj %}
+                                {% if BOM.status == 'pending' %}
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group bmd-form-group">
+                                                        <label class="bmd-label-floating">B.O.M Name</label>
+                                                        <input class="form-control" value="{{ BOM.BOMname }}"
+                                                               id="BOMname" name="BOMname"
+                                                               readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div id="projectName"
+                                                         style="display: none;">{{ BOM.BOMname }}</div>
+                                                    <div class="form-group bmd-form-group">
+                                                        <label class="bmd-label-floating">Project Name</label>
+                                                        <input class="form-control" value="{{ BOM.projectName }}"
+                                                               id="BOMproject" name="BOMproject"
+                                                               readonly>
+                                                    </div>
+                                                    <div class="form-group bmd-form-group">
+
+                                                        <button type="submit" class="btn btn-warning pull-right"
+                                                                id="approve"
+                                                                name="approve" onclick="return confirm(' Are you sure you want to Mark as APPROVED? \n ' +
+                                                         'All items in BOM will be BOOK OUT with amounts stated in BOM automatically \n ' +
+                                                          'and any stock item level the doesnt reach request amount will be sent via email for order')">
+                                                            Mark as APPROVED
+                                                        </button>
+                                                        <button type="button" class="btn btn-primary pull-right"
+                                                                data-toggle="modal"
+                                                                data-target="#addItemsModal"
+                                                                onclick="popDOM('{{ BOM.projectName }}', '{{ BOM.BOMname }}')">
+                                                            Add Items to BOM
+                                                        </button>
+                                                        <button type="submit" class="btn btn-danger pull-right"
+                                                                id="delete"
+                                                                name="delete"
+                                                                onclick="return confirm(' Are you sure you want to DELETE BOM?')">
+                                                            CANCEL BOM
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </form>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-tabs card-header-warning">
+                            <span class="nav-tabs-title">APPROVED Bill Of Materials</span>
+                        </div>
+                        <div class="card-body">
+                            {% for BOM in BOMObj %}
+                                {% if BOM.status == 'approved' %}
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group bmd-form-group">
+                                                        <label class="bmd-label-floating">B.O.M Name</label>
+                                                        <input class="form-control" value="{{ BOM.BOMname }}"
+                                                               id="BOMname" name="BOMname"
+                                                               readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div id="projectName"
+                                                         style="display: none;">{{ BOM.BOMname }}</div>
+                                                    <div class="form-group bmd-form-group">
+                                                        <label class="bmd-label-floating">Project Name</label>
+                                                        <input class="form-control" value="{{ BOM.projectName }}"
+                                                               id="BOMproject" name="BOMproject"
+                                                               readonly>
+                                                    </div>
+                                                    <div class="form-group bmd-form-group">
+                                                        <button type="submit" class="btn btn-danger pull-right"
+                                                                id="deleteApproved"
+                                                                name="deleteApproved"
+                                                                onclick="return confirm(' Are you sure you want to DELETE BOM? \n ' +
+                                                                 'PLEASE NOTE: STOCK FOR THIS PORJECT WILL NEED TO BE BOOKED BACK IN MANUALLY \n ' +
+                                                                  'STOCK THAT WAS EMAILED AT TIME OF BOM CREATION WILL NOT NEED TO BE BOOKED IN')">
+                                                            CANCEL BOM
+                                                        </button>
+                                                        <button type="submit" class="btn btn-success pull-right"
+                                                                id="complete"
+                                                                name="complete">
+                                                            Mark as COMPLETE
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </form>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-tabs card-header-success">
+                            <span class="nav-tabs-title">COMPLETED Bill Of Materials</span>
+                        </div>
+                        <div class="card-body">
+                            {% for BOM in BOMObj %}
+                                {% if BOM.status == 'complete' %}
+                                    <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-floating">B.O.M Name</label>
+                                                <input class="form-control" value="{{ BOM.BOMname }}"
+                                                       id="BOMname" name="BOMname"
+                                                       readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div id="projectName"
+                                                 style="display: none;">{{ BOM.BOMname }}</div>
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-floating">Project Name</label>
+                                                <input class="form-control" value="{{ BOM.projectName }}"
+                                                       id="BOMproject" name="BOMproject"
+                                                       readonly>
+                                            </div>
+                                            <div class="form-group bmd-form-group">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-tabs card-header-info">
+                            <span class="nav-tabs-title">CANCELED Bill Of Materials</span>
+                        </div>
+                        <div class="card-body">
+                            {% for BOM in BOMObj %}
+                                {% if BOM.status == 'Canceled' %}
+                                    <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-floating">B.O.M Name</label>
+                                                <input class="form-control" value="{{ BOM.BOMname }}"
+                                                       id="BOMname" name="BOMname"
+                                                       readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div id="projectName"
+                                                 style="display: none;">{{ BOM.BOMname }}</div>
+                                            <div class="form-group bmd-form-group">
+                                                <label class="bmd-label-floating">Project Name</label>
+                                                <input class="form-control" value="{{ BOM.projectName }}"
+                                                       id="BOMproject" name="BOMproject"
+                                                       readonly>
+                                            </div>
+                                            <div class="form-group bmd-form-group">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="addItemsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Items</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post" id="my_form">
+                        {% csrf_token %}
+                        <div class="form-group bmd-form-group">
+                            <input class="form-control" id="BOMProj" name="BOMProj" value=""/>
+
+                        </div>
+                    </form>
+                    <div class="modal-body">
+                        <div class="form-group bmd-form-group">
+                            <input class="form-control" type="text" id="search" placeholder="Type to search">
+                            <button type="submit" class="btn btn-primary pull-right" value="createBOMStock"
+                                    name="createBOMStock" id="createBOMStock" form="my_form"
+                                    onclick="return confirm(' Adding Items will apply a SOFT LOCK on amount requested \n' +
+                                     ' until BOM marked as approved')">
+                                Add Items to BOM
+                            </button>
+
+                        </div>
+                        <hr>
+                        <table id="table" style="width: 100%">
+                            {% for items in stockObj %}
+                                <tr>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                {{ items.name }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input autocomplete="off" name="{{ items.name }}_amount"
+                                                       id="{{ items.name }}_amount" type="number"
+                                                       class="form-control" form="my_form" value="">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+                <script>
+                    var $rows = $('#table tr');
+                    $('#search').keyup(function () {
+                        var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+
+                        $rows.show().filter(function () {
+                            var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                            return !~text.indexOf(val);
+                        }).hide();
+                    });
+                </script>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function popDOM(divName, bom) {
+            console.log(bom)
+            document.getElementById('BOMProj').value = divName;
+            document.getElementById('BOMname').value = bom;
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'stock/_header.html' %}
+{% load humanize %}
+{% block content %}
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+
+        #myUL {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            -webkit-column-count: 3;
+            -moz-column-count: 3;
+            column-count: 3;
+        }
+
+
+    </style>
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-tabs card-header-primary">
+                            <div class="nav-tabs-navigation">
+                                <div class="nav-tabs-wrapper">
+                                    <form method="POST" id="consignmentItems">
+                                        {% csrf_token %}
+                                        <span class="nav-tabs-title">Manage Inventory Profile</span><input
+                                            class="btn btn-info pull-right" type="submit"
+                                            value="Save"
+                                            id="consignment" name="consignment">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="profile"></div>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <tr class="row">
+                                        <div class="col-lg-12 col-sm-12 col-xs-12">
+                                            <label class="bmd-label-floating">Inventory Profile</label>
+                                            <input form="consignmentItems" autocomplete="off" list="profiles"
+                                                   class="form-control" value="{{ consignProfileName }}"
+                                                   name="consignmentProfile" id="consignmentProfile" type="text"
+                                                   readonly>
+                                            <datalist id="profiles">
+                                                {% for cProfile in consignObj %}
+                                                    <option value="{{ cProfile.name }}">
+                                                {% endfor %}
+                                            </datalist>
+                                        </div>
+                                        <hr>
+                                        <input type="text" id="myInput" class="form-control" onkeyup="myFunction()"
+                                               placeholder="Search for stock.." title="Type in a name">
+                                            <ul id="myUL">
+                                                {% for items in stockObj %}
+                                                        <li>
+                                                            <a><input form="consignmentItems" autocomplete="off"
+                                                                   name="{{ items.name }}"
+                                                                   id="{{ items.name }}" type="checkbox"
+                                                                    {% if items.name in consignmentObj %}
+                                                                   checked {% endif %}>
+                                                            <label for="{{ items.name }}"
+                                                                      style="color: black">
+                                                                {{ items.name }}
+                                                            </label>
+                                                            </a>
+                                                        </li>
+                                                {% endfor %}
+                                            </ul>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function myFunction() {
+            var input, filter, ul, li, a, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            ul = document.getElementById("myUL");
+            li = ul.getElementsByTagName("li");
+            for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0];
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+    </div>
+    </div>
+    <script>
+        var $rows2 = $('#table tr');
+        $('#search').keyup(function () {
+            var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+
+            $rows2.show().filter(function () {
+                var text = $(this).text().replace(/\s+/g, ' ').toLowerCase();
+                return !~text.indexOf(val);
+            }).hide();
+        });
+    </script>
+{% endblock %}
